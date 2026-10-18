@@ -47,7 +47,7 @@ app.post("/api/download", (req, res) => {
     const {url, title} = req.body
 
     if(!url) {
-        return res.status(400),json({error: "URL is required"})
+        return res.status(400).json({error: "URL is required"})
     }
 
     const safeName = (title || "video").replace(/[^a-zA-Z0-9_-]/g, "_").substring(0,60)
@@ -74,21 +74,6 @@ app.post("/api/download", (req, res) => {
         }
     })
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

@@ -77,6 +77,11 @@ async function downloadOne(index) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url: video.link, title: video.title }),
     });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Server error ${res.status}: ${text.slice(0, 200)}`);
+    }
+
     const data = await res.json();
 
     if (data.success) {
@@ -98,24 +103,24 @@ async function downloadOne(index) {
   }
 }
 
-// async function downloadAll() {
-//   setStatus("Downloading All videos...");
-//   for (let i = 0; i < currentVideos.length; i++) {
-//     const btn = document.getElementById(`btn-${i}`);
-//     if (btn && btn.classList.contains("done")) continue;
-//     try {
-//       await downloadOne(i);
-//     } catch (err) {
-//       console.error(`Failed to download video ${i}:`, err);
-//     }
-//     setStatus(`Downloaded ${i + 1} of ${currentVideos.length}`);
-//   }
-//   setStatus("All downloads complete!");
-// }
+async function downloadAll() {
+  setStatus("Downloading All videos...");
+  for (let i = 0; i < currentVideos.length; i++) {
+    const btn = document.getElementById(`btn-${i}`);
+    if (btn && btn.classList.contains("done")) continue;
+    try {
+      await downloadOne(i);
+    } catch (err) {
+      console.error(`Failed to download video ${i}:`, err);
+    }
+    setStatus(`Downloaded ${i + 1} of ${currentVideos.length}`);
+  }
+  setStatus("All downloads complete!");
+}
 
-// const downloadAllBtn = document.getElementById("download");
-// downloadAllBtn.addEventListener("click", downloadAll);
+const downloadAllBtn = document.getElementById("download");
+downloadAllBtn.addEventListener("click", downloadAll);
 
-// function setStatus(msg) {
-//   document.getElementById("status").textContent = msg;
-// }
+function setStatus(msg) {
+  document.getElementById("status").textContent = msg;
+}
