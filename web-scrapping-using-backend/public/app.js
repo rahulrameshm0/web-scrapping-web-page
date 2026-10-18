@@ -90,12 +90,12 @@ async function downloadOne(index) {
     } else {
       btn.textContent = "✗ Failed";
       btn.classList.add("error");
-    //   console.error(
-    //     `Download failed for: ${video.link}`,
-    //     data.error,
-    //     data.details,
-    //   );
-    } 
+      //   console.error(
+      //     `Download failed for: ${video.link}`,
+      //     data.error,
+      //     data.details,
+      //   );
+    }
   } catch (err) {
     btn.textContent = "✗ Failed";
     btn.classList.add("error");
