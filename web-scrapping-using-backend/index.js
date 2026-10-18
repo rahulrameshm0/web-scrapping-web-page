@@ -52,15 +52,15 @@ app.post("/api/download", (req, res) => {
   const safeName = (title || "video")
     .replace(/[^a-zA-Z0-9_-]/g, "_")
     .substring(0, 60);
-  const outPutTemplate = path.join(DOWNLOADS_DIR, `${safeName}.%(ext)s`);
+  const outPutTemplate = path.join(DOWNLOADS_DIR, `${safeName}.mp4`);
   execFile(
     "yt-dlp",
     [
       "-o",
       outPutTemplate,
       "--no-playlist",
-      "--merge-output-format",
-      "mp4",
+      "--no-check-certificate",
+      "--merge-output-format", "mp4",
       url,
     ],
     { timeout: 120000 },
