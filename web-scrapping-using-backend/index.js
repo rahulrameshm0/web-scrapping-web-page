@@ -6,6 +6,10 @@ const express = require("express");
 const path = require("path");
 const fs = require("fs");
 const { getJson } = require("serpapi");
+const { json } = require("stream/consumers");
+const { exec, execFile } = require("child_process");
+const { time } = require("console");
+const { stderr } = require("process");
 
 const app = express();
 const port = 3000;
@@ -37,6 +41,54 @@ app.get("/api/search", (req, res) => {
     },
   );
 });
+
+
+app.post("/api/download", (req, res) => {
+    const {url, title} = req.body
+
+    if(!url) {
+        return res.status(400),json({error: "URL is required"})
+    }
+
+    const safeName = (title || "video").replace(/[^a-zA-Z0-9_-]/g, "_").substring(0,60)
+    const outPutTemplate = path.join(DOWNLOADS_DIR, `${safeName}.%(ext)s`)
+    execFile("yt-dlp", [
+        "-o", outPutTemplate,
+        "--no-playlist",
+        "--merge-output-format", "mp4",
+        url
+    ], {timeout: 120000}, (error, stdout, stderr) => {
+        if (error) {
+            console.error("yt-dlp error:", stderr)
+            return res.status(500).json({error: "Failed to download video", details:stderr})
+        }
+
+        const files = fs.readdirSync(DOWNLOADS_DIR)
+        const downloaded = files.find(f => f.startsWith(safeName))
+
+        if (downloaded) {
+            res.json({success: true, fileName: downloaded, path: `downloads/${downloaded}`})
+        } else {
+            res.json({success: true, message: "download completed but file not downloaded", path: `downloads/${downloaded}`})
+            
+        }
+    })
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

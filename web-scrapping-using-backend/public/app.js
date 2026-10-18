@@ -15,10 +15,10 @@ async function search() {
 
   try {
     const res = await fetch(
-      `/api/search?q=${encodeURIComponent}&count=${count}`,
+      `/api/search?q=${encodeURIComponent(q)}&count=${count}`,
     );
     const data = await res.json();
-    const currentVideos = data.videos || [];
+    currentVideos = data.videos || [];
 
     if (currentVideos.length === 0) {
       setStatus("No videos found");
@@ -85,12 +85,12 @@ async function downloadOne(index) {
     } else {
       btn.textContent = "✗ Failed";
       btn.classList.add("error");
-      console.error(
-        `Download failed for: ${video.link}`,
-        data.error,
-        data.details,
-      );
-    }
+    //   console.error(
+    //     `Download failed for: ${video.link}`,
+    //     data.error,
+    //     data.details,
+    //   );
+    } 
   } catch (err) {
     btn.textContent = "✗ Failed";
     btn.classList.add("error");
@@ -98,24 +98,24 @@ async function downloadOne(index) {
   }
 }
 
-async function downloadAll() {
-  setStatus("Downloading All videos...");
-  for (let i = 0; i < currentVideos.length; i++) {
-    const btn = document.getElementById(`btn-${i}`);
-    if (btn && btn.classList.contains("done")) continue;
-    try {
-      await downloadOne(i);
-    } catch (err) {
-      console.error(`Failed to download video ${i}:`, err);
-    }
-    setStatus(`Downloaded ${i + 1} of ${currentVideos.length}`);
-  }
-  setStatus("All downloads complete!");
-}
+// async function downloadAll() {
+//   setStatus("Downloading All videos...");
+//   for (let i = 0; i < currentVideos.length; i++) {
+//     const btn = document.getElementById(`btn-${i}`);
+//     if (btn && btn.classList.contains("done")) continue;
+//     try {
+//       await downloadOne(i);
+//     } catch (err) {
+//       console.error(`Failed to download video ${i}:`, err);
+//     }
+//     setStatus(`Downloaded ${i + 1} of ${currentVideos.length}`);
+//   }
+//   setStatus("All downloads complete!");
+// }
 
-const downloadAllBtn = document.getElementById("download");
-downloadAllBtn.addEventListener("click", downloadAll);
+// const downloadAllBtn = document.getElementById("download");
+// downloadAllBtn.addEventListener("click", downloadAll);
 
-function setStatus(msg) {
-  document.getElementById("status").textContent = msg;
-}
+// function setStatus(msg) {
+//   document.getElementById("status").textContent = msg;
+// }
